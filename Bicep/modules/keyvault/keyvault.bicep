@@ -1,10 +1,10 @@
 param cosmosEndpoint string 
 param location string = resourceGroup().location
 param principalId string
-param basename string
+param kvName string
 
 resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-  name: '${basename}kv'
+  name: kvName
   location: location 
   properties: {
     accessPolicies: [

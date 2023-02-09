@@ -1,12 +1,20 @@
 targetScope = 'subscription'
 
 // Parameters
-param rgName string
-param acrName string
-param cosmosName string
-param location string =deployment().location
+param baseName string
 
-var baseName = rgName
+param location string = deployment().location
+
+
+//acr and cosmos adds
+var rnd = uniqueString(subscription().subscriptionId, deployment().name)
+var rndEnd = uniqueString(substring(rnd, 0, 5))
+
+var rgName = 'rg-${baseName}${rndEnd}'
+var acrName = 'acr${baseName}${rndEnd}'
+var cosmosName = 'cdb${baseName}${rndEnd}'
+var kvName = 'kv${baseName}${rndEnd}'
+
 
 module rg 'modules/resource-group/rg.bicep' = {
   name: rgName
@@ -20,7 +28,7 @@ module aksIdentity 'modules/Identity/userassigned.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'managedIdentity'
   params: {
-    basename: baseName
+    basename: '${baseName}${rndEnd}'
     location: location
   }
 }
@@ -54,18 +62,16 @@ module acrDeploy 'modules/acr/acr.bicep' = {
   }
 }
 
-/*
 // Uncomment this to configure log analytics workspace
 
 module akslaworkspace 'modules/laworkspace/la.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'akslaworkspace'
   params: {
-    basename: baseName
+    basename: 'la${baseName}${rndEnd}'
     location: location
   }
 }
-*/
 
 resource subnetaks 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
   name: 'aksSubNet'
@@ -91,11 +97,11 @@ module aksCluster 'modules/aks/aks.bicep' = {
   ]
   params: {
     location: location
-    basename: baseName
-   // logworkspaceid: akslaworkspace.outputs.laworkspaceId   // Uncomment this to configure log analytics workspace
+    basename: '${baseName}${rndEnd}'
+    logworkspaceid: akslaworkspace.outputs.laworkspaceId   // Uncomment this to configure log analytics workspace
     podBindingSelector: 'cosmostodo-apppodidentity'
     podIdentityName: 'cosmostodo-apppodidentity'
-    podIdentityNamespace: 'my-app'
+    podIdentityNamespace: 'chaosdemoapp'
     subnetId: subnetaks.id
     clientId: aksIdentity.outputs.clientId
     identityid: aksIdentity.outputs.identityid
@@ -113,7 +119,7 @@ module cosmosdb 'modules/cosmos/cosmos.bicep'={
     location: location
     principalId:aksIdentity.outputs.principalId
     accountName:cosmosName
-    subNetId: subnetaks.id
+    //subNetId: subnetaks.id
   }
 
 }
@@ -123,7 +129,7 @@ module keyvault 'modules/keyvault/keyvault.bicep'={
   name :'keyVault'
   scope:resourceGroup(rg.name)  
   params:{
-    basename:baseName
+    kvName:kvName
     location:location
     principalId:aksIdentity.outputs.principalId
     cosmosEndpoint: cosmosdb.outputs.cosmosEndpoint

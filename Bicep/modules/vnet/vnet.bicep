@@ -16,14 +16,14 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         properties: {
           addressPrefix: '10.240.0.0/16'
           //remove Service Endpoints if you want to use public endpoint for Cosmos
-          serviceEndpoints: [
-            {
-                service: 'Microsoft.AzureCosmosDB'
-                locations: [
-                  location
-                ]
-            }
-          ]
+          //serviceEndpoints: [
+          //  {
+          //      service: 'Microsoft.AzureCosmosDB'
+          //      locations: [
+          //        location
+          //      ]
+          //  }
+          //]
         }
       }     
     ]

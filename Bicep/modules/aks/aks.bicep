@@ -9,7 +9,7 @@ param podBindingSelector string
 param podIdentityName string
 param podIdentityNamespace string
 
-//param logworkspaceid string  // Uncomment this to configure log analytics workspace
+param logworkspaceid string  // Uncomment this to configure log analytics workspace
 
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-preview' = {
@@ -20,19 +20,19 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
     userAssignedIdentities: identity   
   }
   properties: {
-    kubernetesVersion: '1.22.11'
+    kubernetesVersion: '1.24.6'
     nodeResourceGroup: '${basename}-aksInfraRG'
     dnsPrefix: '${basename}aks'
     agentPoolProfiles: [
       {
         name: 'default'
         count: 2
-        vmSize: 'Standard_D4s_v3'
+        vmSize: 'Standard_d2ds_v4'
         mode: 'System'
         maxCount: 5
         minCount: 2
         osType: 'Linux'
-        osSKU: 'Ubuntu'
+        osSKU: 'CBLMariner'
         enableAutoScaling:true
         maxPods: 50
         type: 'VirtualMachineScaleSets'
@@ -56,14 +56,13 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
     enableRBAC: true
     enablePodSecurityPolicy: false
     addonProfiles:{
-      /*
 	  // Uncomment this to configure log analytics workspace
 	  omsagent: {
         config: {
           logAnalyticsWorkspaceResourceID: logworkspaceid
         }
         enabled: true
-      }*/
+      }
       azureKeyvaultSecretsProvider: {
         enabled: true
       }

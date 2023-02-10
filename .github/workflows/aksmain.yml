@@ -18,9 +18,9 @@ jobs:
           tenant: ${{ secrets.tenant }}
           registry: ${{ secrets.registry }}
           repository: ${{ secrets.repository }}
-          image:  azure-vote-front
-          folder: azure-vote
-          branch: master
+          image:  cosmosaks
+          folder: Application
+          branch: main
           tag: ${{ github.sha }}
       - name: Azure login
         id: login

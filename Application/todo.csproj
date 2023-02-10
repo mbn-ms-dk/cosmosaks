@@ -5,7 +5,7 @@
     <UserSecretsId>385e43af-3751-4085-aceb-c670a91751dd</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
-    <ApplicationInsightsResourceId>/subscriptions/220fc532-6091-423c-8ba0-66c2397d591b/resourceGroups/cosmosdbakstdo-rg/providers/microsoft.insights/components/cosmosdbakstdo-ai</ApplicationInsightsResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/edccd614-120e-4738-9be5-e63d2c6b7b10/resourceGroups/rg-chaosi3a4fxrue7a2s/providers/microsoft.insights/components/chaosi3a4fxrue7a2ai</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>

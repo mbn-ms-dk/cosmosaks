@@ -33,8 +33,11 @@
         public void ConfigureServices(IServiceCollection services)
         {
             // The following line enables Application Insights telemetry collection.
-            services.AddApplicationInsightsTelemetry(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
-           // services.AddApplicationInsightsTelemetry();
+            //services.AddApplicationInsightsTelemetry(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+            services.AddApplicationInsightsTelemetry(configuration =>
+            {
+                configuration.ConnectionString = Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+            });
 
             services.AddControllersWithViews();
 

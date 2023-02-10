@@ -19,7 +19,7 @@ jobs:
           registry: ${{ secrets.registry }}
           repository: ${{ secrets.repository }}
           image:  cosmosaks
-          dockerfile: ./Application/Dockerfile
+          dockerfile: Application/Dockerfile
           branch: main
           tag: ${{ github.sha }}
       - name: Azure login

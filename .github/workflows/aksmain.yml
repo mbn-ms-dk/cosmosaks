@@ -19,7 +19,8 @@ jobs:
           registry: ${{ secrets.registry }}
           repository: ${{ secrets.repository }}
           image:  cosmosaks
-          git_access_token: ${{ secrets.GITHUB_TOKEN }}
+          git_access_token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          folder: Application
           dockerfile: Application\Dockerfile
           branch: main
           tag: ${{ github.sha }}

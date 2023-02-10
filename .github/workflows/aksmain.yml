@@ -42,6 +42,6 @@ jobs:
         with:
           namespace: 'chaosdemoapp'
           manifests: |
-             akstododeploy.yaml
+             Bicep/akstododeploy.yaml
           images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/cosmosaks:${{ github.sha }}'
           pull-images: false

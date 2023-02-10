@@ -5,10 +5,14 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - main
+    paths:
+      - "Application/**"
 
   pull_request:
     branches:
       - main
+    paths:
+      - "Application/**"
 
   workflow_dispatch:
 

@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: mycontainer
-        image: "acrchaosi3a4fxrue7a2s.azurecr.io/cosmosaks:v3"   # update as per your environment, example myacrname.azurecr.io/todo:latest. Do NOT add https:// in ACR Name
+        image: "acrchaosi3a4fxrue7a2s.azurecr.io/todoapp/cosmosaks:v3"   # update as per your environment, example myacrname.azurecr.io/todo:latest. Do NOT add https:// in ACR Name
         ports:
         - containerPort: 80
         env:

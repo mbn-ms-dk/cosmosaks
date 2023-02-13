@@ -25,12 +25,12 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # VALIDATE_YAML: false
-          # VALIDATE_ALL_CODEBASE: false
+          VALIDATE_YAML: false
+          VALIDATE_ALL_CODEBASE: true
           VALIDATE_CSHARP: true
           VALIDATE_CSS: false
-          VALIDATE_JSCPD: false  # should be true, need time to fix
-          VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
+          # VALIDATE_JSCPD: false  # should be true, need time to fix
+          # VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
 
   build:
     name: Build & Test

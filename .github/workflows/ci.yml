@@ -28,7 +28,7 @@ jobs:
           # VALIDATE_YAML: false
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_CSHARP: true
-           VALIDATE_CSS: false
+          VALIDATE_CSS: false
           VALIDATE_JSCPD: false  # should be true, need time to fix
           VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
 
@@ -45,10 +45,10 @@ jobs:
           dotnet-version: 7.0.x
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore Application/*.csproj
 
       - name: Build
-        run: dotnet build --configuration Release
+        run: dotnet build Application/*.csproj --configuration Release
 
       - name: Test
-        run: dotnet test
+        run: dotnet test Application/*.csproj

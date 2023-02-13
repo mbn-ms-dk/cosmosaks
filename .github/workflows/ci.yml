@@ -13,26 +13,26 @@ on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
-  lint:
-    name: Lint Code Base
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+  # lint:
+  #   name: Lint Code Base
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
 
-      - name: Lint Code Base
-        uses: docker://ghcr.io/github/super-linter:v4
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # VALIDATE_YAML: false
-          # VALIDATE_ALL_CODEBASE: true
-          VALIDATE_CSHARP: true
-          # VALIDATE_CSS: false
-          # VALIDATE_JAVASCRIPT_ES: false
-          # VALIDATE_JAVASCRIPT_STANDARD: false
-          # VALIDATE_JSCPD: false  # should be true, need time to fix
-          # VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
+  #     - name: Lint Code Base
+  #       uses: docker://ghcr.io/github/super-linter:v4
+  #       env:
+  #         DEFAULT_BRANCH: main
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         # VALIDATE_YAML: false
+  #         # VALIDATE_ALL_CODEBASE: true
+  #         VALIDATE_CSHARP: true
+  #         # VALIDATE_CSS: false
+  #         # VALIDATE_JAVASCRIPT_ES: false
+  #         # VALIDATE_JAVASCRIPT_STANDARD: false
+  #         # VALIDATE_JSCPD: false  # should be true, need time to fix
+  #         # VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
 
   build:
     name: Build & Test

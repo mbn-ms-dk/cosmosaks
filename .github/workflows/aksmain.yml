@@ -25,7 +25,7 @@ jobs:
           tag: ${{ github.sha }}
       - name: Azure login
         id: login
-        uses: azure/login@v1.4.3
+        uses: azure/login@v1.4.7
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Set AKS context

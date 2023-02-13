@@ -1,56 +1,52 @@
-# ---
-# name: Build and Test
+---
+name: Build and Test
 
-# on:  # yamllint disable-line rule:truthy
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - "Application/**"
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
 
-#   pull_request:
-#     branches:
-#       - main
-#     paths:
-#       - "Application/**"
+  pull_request:
+    branches:
+      - main
 
-#   workflow_dispatch:
+  workflow_dispatch:
 
-# jobs:
-#   lint:
-#     name: Lint Code Base
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
+jobs:
+  lint:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#       - name: Lint Code Base
-#         uses: docker://ghcr.io/github/super-linter:v4
-#         env:
-#           DEFAULT_BRANCH: main
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           # VALIDATE_YAML: false
-#           VALIDATE_ALL_CODEBASE: true
-#           VALIDATE_JSCPD: false  # should be true, need time to fix
-#           VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
+      - name: Lint Code Base
+        uses: docker://ghcr.io/github/super-linter:v4
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # VALIDATE_YAML: false
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_JSCPD: false  # should be true, need time to fix
+          VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
 
-#   build:
-#     name: Build & Test
-#     runs-on: ubuntu-latest
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-#       - name: Setup .NET
-#         uses: actions/setup-dotnet@v3
-#         with:
-#           dotnet-version: 7.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
 
-#       - name: Restore
-#         run: dotnet restore
+      - name: Restore
+        run: dotnet restore
 
-#       - name: Build
-#         run: dotnet build --configuration Release
+      - name: Build
+        run: dotnet build --configuration Release
 
-#       - name: Test
-#         run: dotnet test
+      - name: Test
+        run: dotnet test

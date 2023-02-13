@@ -29,7 +29,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           # VALIDATE_CSHARP: true
           VALIDATE_CSS: false
-          # VALIDATE_JSCPD: false  # should be true, need time to fix
+          VALIDATE_JAVASCRIPT_ES: false
+          VALIDATE_JAVASCRIPT_STANDARD: false
+          VALIDATE_JSCPD: false  # should be true, need time to fix
           # VALIDATE_KUBERNETES_KUBEVAL: false  # validates schema of dapr files - not sure if it can be fixed 
 
   build:

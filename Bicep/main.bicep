@@ -110,7 +110,7 @@ module aksCluster 'modules/aks/aks.bicep' = {
     logworkspaceid: akslaworkspace.outputs.laworkspaceId   // Uncomment this to configure log analytics workspace
     podBindingSelector: 'cosmostodo-apppodidentity'
     podIdentityName: 'cosmostodo-apppodidentity'
-    podIdentityNamespace: 'chaosdemoapp'
+    podIdentityNamespace: 'todoapp'
     subnetId: subnetaks.id
     clientId: aksIdentity.outputs.clientId
     identityid: aksIdentity.outputs.identityid

@@ -36,7 +36,7 @@ namespace todo
                                 new DefaultAzureCredential());
                             config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
                         }
-                        config.AddJsonFile("secrets/appsettings.secrets.json", optional: true); //to read pod secret
+                        config.AddJsonFile("secrets/appsettings.secrets.json", optional: true); //to read pod secrets
 
 
                     }

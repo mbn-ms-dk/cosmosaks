@@ -102,7 +102,8 @@ module aksCluster 'modules/aks/aks.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'aksCluster'
   dependsOn: [
-    aksMangedIDOperator    
+    aksMangedIDOperator
+    aksNetworkContributor    
   ]
   params: {
     location: location

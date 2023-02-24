@@ -88,14 +88,14 @@ module aksMangedIDOperator 'modules/Identity/role.bicep' = {
   }
 }
 
-module aksNetworkContributor 'modules/Identity/role.bicep' = {
-  name: 'aksNetworkContributor'
-  scope: resourceGroup(rg.name)
-  params: {
-    principalId: aksIdentity.outputs.principalId
-    roleGuid: '4d97b98b-1d4f-4787-a291-c67834d212e7'  //Network Contributor
-  }
-}
+// module aksNetworkContributor 'modules/Identity/role.bicep' = {
+//   name: 'aksNetworkContributor'
+//   scope: resourceGroup(rg.name)
+//   params: {
+//     principalId: aksIdentity.outputs.principalId
+//     roleGuid: '4d97b98b-1d4f-4787-a291-c67834d212e7'  //Network Contributor
+//   }
+// }
 
 
 module aksCluster 'modules/aks/aks.bicep' = {
@@ -103,7 +103,7 @@ module aksCluster 'modules/aks/aks.bicep' = {
   name: 'aksCluster'
   dependsOn: [
     aksMangedIDOperator
-    aksNetworkContributor    
+    //aksNetworkContributor    
   ]
   params: {
     location: location

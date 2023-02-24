@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "baseName": {
-      "value": "app1"
+      "value": "team"
     }
   }
 }

@@ -19,14 +19,13 @@ jobs:
           registry: ${{ secrets.registry }}
           repository: ${{ secrets.repository }}
           image:  cosmosaks
-          git_access_token: ${{ secrets.GITHUB_TOKEN }} # Use secrets.GITHUB_TOKEN for public repo or create a PAT secrets.GIT_ACCESS_TOKEN for private repo
+          git_access_token: ${{ secrets.git_access_token }}
           folder: Application
-          dockerfile: Dockerfile
           branch: main
           tag: ${{ github.sha }}
       - name: Azure login
         id: login
-        uses: azure/login@v1.4.7
+        uses: azure/login@v1.4.3
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Set AKS context
@@ -45,5 +44,5 @@ jobs:
           namespace: 'todoapp'
           manifests: |
              Bicep/akstododeploy.yml
-          images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}:${{ github.sha }}'
+          images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/cosmosaks:${{ github.sha }}'
           pull-images: false

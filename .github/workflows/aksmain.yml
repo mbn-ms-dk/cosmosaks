@@ -9,10 +9,6 @@ jobs:
     steps:
       - name: Checkout source code 
         uses: actions/checkout@v3
-      - name: check values
-        run: |
-          echo ${{ secrets.registry }}
-          echo ${{ secrets.repository }}
       - name: ACR build
         id: build-push-acr
         uses: azure/acr-build@v1
@@ -25,6 +21,7 @@ jobs:
           image:  cosmosaks
           git_access_token: ${{ secrets.GITHUB_TOKEN }} # Use secrets.GITHUB_TOKEN for public repo or create a PAT secrets.GIT_ACCESS_TOKEN for private repo
           folder: Application
+          dockerfile: Dockerfile
           branch: main
           tag: ${{ github.sha }}
       - name: Azure login

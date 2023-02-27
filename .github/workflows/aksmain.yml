@@ -48,5 +48,5 @@ jobs:
           namespace: 'todoapp'
           manifests: |
              Bicep/akstododeploy.yml
-          images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/cosmosaks:${{ github.sha }}'
+          images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}:${{ github.sha }}'
           pull-images: false

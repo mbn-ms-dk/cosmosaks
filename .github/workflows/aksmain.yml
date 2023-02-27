@@ -41,7 +41,7 @@ jobs:
         id: deploy-aks
         uses: Azure/k8s-deploy@v4
         with:
-          namespace: 'chaosdemoapp'
+          namespace: 'todoapp'
           manifests: |
              Bicep/akstododeploy.yml
           images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/cosmosaks:${{ github.sha }}'

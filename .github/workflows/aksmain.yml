@@ -19,7 +19,7 @@ jobs:
           registry: ${{ secrets.registry }}
           repository: ${{ secrets.repository }}
           image:  cosmosaks
-          git_access_token: ${{ secrets.GIT_ACCESS_TOKEN }} # Use secrets.GITHUB_TOKEN for public repo or create a PAT secrets.GIT_ACCESS_TOKEN for private repo
+          git_access_token: ${{ secrets.GITHUB_TOKEN }} # Use secrets.GITHUB_TOKEN for public repo or create a PAT secrets.GIT_ACCESS_TOKEN for private repo
           folder: Application
           branch: main
           tag: ${{ github.sha }}

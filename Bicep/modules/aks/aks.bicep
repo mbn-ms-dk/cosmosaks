@@ -30,9 +30,9 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
         vmSize: 'Standard_d2ds_v4'
         mode: 'System'
         maxCount: 3
-        minCount: 2
+        minCount: 1
         osType: 'Linux'
-        //osSKU: 'CBLMariner'
+        osSKU: 'CBLMariner'
         enableAutoScaling:true
         maxPods: 50
         type: 'VirtualMachineScaleSets'

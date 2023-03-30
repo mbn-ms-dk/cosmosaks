@@ -16,6 +16,7 @@ var cosmosName = 'cdb${baseName}${rndEnd}'
 var kvName = 'kv${baseName}${rndEnd}'
 
 
+//Create Resource Group
 module rg 'modules/resource-group/rg.bicep' = {
   name: rgName
   params: {
@@ -24,6 +25,7 @@ module rg 'modules/resource-group/rg.bicep' = {
   }
 }
 
+//Create identity
 module aksIdentity 'modules/Identity/userassigned.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'managedIdentity'
@@ -33,13 +35,13 @@ module aksIdentity 'modules/Identity/userassigned.bicep' = {
   }
 }
 
-
+//Create Vnet Resource
 resource vnetAKSRes 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   scope: resourceGroup(rg.name)
   name: vnetAKS.outputs.vnetName
 }
 
-
+//Create Vnet
 module vnetAKS 'modules/vnet/vnet.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'aksVNet'
@@ -52,6 +54,7 @@ module vnetAKS 'modules/vnet/vnet.bicep' = {
   ]
 }
 
+//Create ACR
 module acrDeploy 'modules/acr/acr.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'acrInstance'
@@ -62,8 +65,8 @@ module acrDeploy 'modules/acr/acr.bicep' = {
   }
 }
 
-// Uncomment this to configure log analytics workspace
 
+//Create Log Analytics Workspace
 module akslaworkspace 'modules/laworkspace/la.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'akslaworkspace'
@@ -73,12 +76,13 @@ module akslaworkspace 'modules/laworkspace/la.bicep' = {
   }
 }
 
+//Create Subnet
 resource subnetaks 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
   name: 'aksSubNet'
   parent: vnetAKSRes
 }
 
-
+//Assign Roles
 module aksMangedIDOperator 'modules/Identity/role.bicep' = {
   name: 'aksMangedIDOperator'
   scope: resourceGroup(rg.name)
@@ -97,7 +101,7 @@ module aksNetworkContributor 'modules/Identity/role.bicep' = {
   }
 }
 
-
+//Create AKS
 module aksCluster 'modules/aks/aks.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'aksCluster'
@@ -108,7 +112,7 @@ module aksCluster 'modules/aks/aks.bicep' = {
   params: {
     location: location
     basename: '${baseName}${rndEnd}'
-    logworkspaceid: akslaworkspace.outputs.laworkspaceId   // Uncomment this to configure log analytics workspace
+    logworkspaceid: akslaworkspace.outputs.laworkspaceId   
     podBindingSelector: 'cosmostodo-apppodidentity'
     podIdentityName: 'cosmostodo-apppodidentity'
     podIdentityNamespace: 'todoapp'
@@ -122,6 +126,7 @@ module aksCluster 'modules/aks/aks.bicep' = {
   }
 }
 
+//Create Cosmos DB
 module cosmosdb 'modules/cosmos/cosmos.bicep'={
   scope:resourceGroup(rg.name)
   name:'cosmosDB'
@@ -129,12 +134,10 @@ module cosmosdb 'modules/cosmos/cosmos.bicep'={
     location: location
     principalId:aksIdentity.outputs.principalId
     accountName:cosmosName
-    //subNetId: subnetaks.id
   }
-
 }
 
-
+//Create Key Vault
 module keyvault 'modules/keyvault/keyvault.bicep'={
   name :'keyVault'
   scope:resourceGroup(rg.name)  
@@ -144,6 +147,5 @@ module keyvault 'modules/keyvault/keyvault.bicep'={
     principalId:aksIdentity.outputs.principalId
     cosmosEndpoint: cosmosdb.outputs.cosmosEndpoint
   }
-
 }
 

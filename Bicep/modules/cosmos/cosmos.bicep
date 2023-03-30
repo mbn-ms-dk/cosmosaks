@@ -51,13 +51,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     enableAutomaticFailover: true
     enableMultipleWriteLocations: false   
     isVirtualNetworkFilterEnabled: false     // set to false if you want to use public endpoint for Cosmos
-    //remove virtualNetworkRules if you want to use public endpoint for Cosmos
-  //  virtualNetworkRules: [
-  //        {
-  //            id: subNetId
-  //            ignoreMissingVNetServiceEndpoint: false
-  //        }
-  //    ]
   }
 }
 output cosmosEndpoint string = databaseAccount.name

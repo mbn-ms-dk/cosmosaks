@@ -14,7 +14,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
     adminUserEnabled: true
   }
 }
-output acrid string = acr.id
+output acrId string = acr.id
 
 
 @description('This is the built-in role to Pull artifacts from a container registry. See https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#acrpull')

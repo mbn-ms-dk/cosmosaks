@@ -33,6 +33,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
         minCount: 1
         osType: 'Linux'
         osSKU: 'CBLMariner'
+        //osDiskType: 'Ephemeral'
         enableAutoScaling:true
         maxPods: 50
         type: 'VirtualMachineScaleSets'
@@ -56,7 +57,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
     enableRBAC: true
     enablePodSecurityPolicy: false
     addonProfiles:{
-	  // Uncomment this to configure log analytics workspace
 	  omsagent: {
         config: {
           logAnalyticsWorkspaceResourceID: logworkspaceid

@@ -15,25 +15,12 @@ The Bicep modules will provision the following Azure Resources under subscriptio
 5. An AKS Cluster
 6. A Cosmos DB SQL API Account along with a Database, Container, and SQL Role to manage RBAC
 7. A Key Vault to store secure keys
-8. A Log Analytics Workspace (optional)
+8. A Log Analytics Workspace 
 
 ### Architecture
 
 ![Architecture Diagram](assets/images/cosmos-todo-aks-architecture.png)
 
-### Securing the Cosmos DB account
-
-You can configure the Azure Cosmos DB account to:
-
-1. Allow access only from a specific subnet of a virtual network (VNET) **or** make it accessible from any source.
-2. Authorize request accompanied by a valid authorization token **or** restrict access using RBAC and Managed Identity.
-
-This deployment uses the following best practices to enhance security of the Azure Cosmos DB account
-
-1. Limits access to the subnet by [configuring a virtual network service endpoint](https://docs.microsoft.com/azure/cosmos-db/how-to-configure-vnet-service-endpoint).
-2. Set disableLocalAuth = true in the databaseAccount resource to [enforce RBAC as the only authentication method](https://docs.microsoft.com//azure/cosmos-db/how-to-setup-rbac#disable-local-auth).
-
-Refer to the comments in *Bicep\modules\cosmos\cosmos.bicep*, and *Bicep\modules\vnet\vnet.bicep* files and edit these files as required to remove the above mentioned restrictions.
 
 ## Deploy infrastructure with Bicep
 
@@ -56,21 +43,15 @@ az account set -s <Subscription ID>
 
 **3. Initialize Parameters**
 
-Create a param.json file by using the following JSON, replace the {Resource Group Name}, {Cosmos DB Account Name}, and {ACR Instance Name} placeholders with your own values for Resource Group Name, Cosmos DB Account Name, and Azure Container Registry instance Name. Refer to [Naming rules and restrictions for Azure resources](https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules).
+Create a param.json file by using the following JSON, replace the {Base Name} placeholders with your own values for Base name. 
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "rgName": {
-      "value": "{Resource Group Name}"
-    },    
-    "cosmosName" :{
-      "value": "{Cosmos DB Account Name}"
-    },
-    "acrName" :{
-      "value": "{ACR Instance Name}"
+    "baseName": {
+      "value": "spas"
     }
   }
 }
@@ -82,7 +63,7 @@ Run the following script to create the deployment
 
 ```azurecli
 deploymentName='{Deployment Name}'  # Deployment Name
-location='{Location}' # Location for deploying the resources
+location='westeurope' # Location for deploying the resources - set to westeurope with failoover in northeurope
 
 az deployment sub create --name $deploymentName --location $location --template-file main.bicep --parameters @param.json
 ```
@@ -91,7 +72,7 @@ az deployment sub create --name $deploymentName --location $location --template-
 
 The deployment could take somewhere around 20 to 30 mins. Once provisioning is completed you should see a JSON output with Succeeded as provisioning state.
 
-![Deployment Success](assets/images/bicep_success.png)
+![Deployment Success](assets/images/bicep_success.png)S
 
 You can also see the deployment status in the Resource Group
 
@@ -161,7 +142,7 @@ spec:
 
 **8. Apply the SecretProviderClass to your cluster**
 
-The following command installs the Secrets Store CSI Driver using the YAML. 
+The following command installs the Secrets Store CSI Driver using the YAML.
 
 ```azurecli
 kubectl apply -f secretproviderclass.yml
@@ -169,16 +150,7 @@ kubectl apply -f secretproviderclass.yml
 
 **9. Push the container image to Azure Container Registry**
 
-The application can be built and pushed to ACR using Visual Studio or VS Code, use any of the two methods given below
-**Using Visual Studio**
-
-Prerequisites: 
-* [Docker Desktop](https://docs.docker.com/desktop/)
-* [Visual Studio 2022](https://visualstudio.microsoft.com/downloads) with the Web Development, Azure Tools workload, and/or .NET Core cross-platform development workload installed
-* [.NET Core Development Tools](https://dotnet.microsoft.com/download/dotnet-core/) for development with .NET Core
-
-
-Build the application source code available in the Application folder, and then [publish the container image to the ACR](https://docs.microsoft.com/visualstudio/containers/hosting-web-apps-in-docker?view=vs-2022).
+The application can be built and pushed to ACR using VS Code
 
 **Using Visual Studio Code**
 
@@ -191,11 +163,11 @@ Prerequisites:
 
     1. To build the code, open the Application folder in VS code. Select Yes to the warning message to add the missing build and debug assets. Pressing the F5 button to run the application.
 
-    2. To create a container image from the Explorer tab on VS Code, right click on the Dokcerfile and select BuildImage. You will then get a prompt asking for the name and version to tag the image. Type todo:latest.
+    2. To create a container image from the Explorer tab on VS Code, right click on the Docker and select BuildImage. You will then get a prompt asking for the name and version to tag the image. Type cosmosaks:latest.
 
         ![Build Image VS Code](assets/images/build_image.png)
 
-    3. To push the built image to ACR open the Docker tab.You will find the built image under the Images node. Open the todo node, right-click on latest and select "Push...". You will then get prompts to select your Azure Subscription, ACR, and Image tag. Image tag format should be {acrname}.azurecr.io/todo:latest.
+    3. To push the built image to ACR open the Docker tab.You will find the built image under the Images node. Open the todo node, right-click on latest and select "Push...". You will then get prompts to select your Azure Subscription, ACR, and Image tag. Image tag format should be {acrname}.azurecr.io/cosmosaks:latest.
 
         ![Push Image to ACR](assets/images/image_push.png)
 

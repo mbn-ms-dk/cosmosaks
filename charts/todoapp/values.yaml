@@ -1,0 +1,26 @@
+replicaCount: 1
+
+nameOverride: ""
+
+image:
+  repository: crawig22eou35s4o5w.azurecr.io/cosmosaks
+  pullPolicy: Always
+  tag: "latest" #image tag should be set in Chart.yaml - but where it's a strange tag, just override here
+
+service:
+  type: LoadBalancer
+  port: 80
+
+serviceAccount:
+  create: true
+  name: "" #Leave empty and it'll default to the name of the app, thanks to the _helpers.tpl
+
+azureWorkloadIdentity:
+  clientId: ""
+  tenantId: ""
+
+keyvaultName: ""
+secretName: ""
+cosmosdbEndpoint: ""
+
+podSecurityContext: {}

@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Identity;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 
 namespace todo
 {
-    using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using System;
-    using System.Configuration;
 
     public class Program
     {
@@ -36,7 +31,7 @@ namespace todo
                                 new DefaultAzureCredential());
                             config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
                         }
-                        config.AddJsonFile("secrets/appsettings.secrets.json", optional: true); //to read pod secrets po ident ns
+                        config.AddJsonFile("secrets/appsettings.secrets.json", optional: true); //to read pod secrets
 
 
                     }

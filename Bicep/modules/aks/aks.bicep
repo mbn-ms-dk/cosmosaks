@@ -22,7 +22,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
   properties: {
     kubernetesVersion: '1.24.9'
     nodeResourceGroup: '${basename}-aksInfraRG'
-    dnsPrefix: '${basename}aks'
+    dnsPrefix: 'aks-${basename}'
     agentPoolProfiles: [
       {
         name: 'default'
@@ -55,6 +55,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-06-02-previ
       enablePrivateCluster: false
     }
     enableRBAC: true
+    
     enablePodSecurityPolicy: false
     addonProfiles:{
 	  omsagent: {

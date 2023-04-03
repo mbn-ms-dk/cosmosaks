@@ -53,10 +53,11 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     isVirtualNetworkFilterEnabled: false     // set to false if you want to use public endpoint for Cosmos
   }
 }
-output cosmosEndpoint string = databaseAccount.name
+output cosmosdbEndpoint string = databaseAccount.properties.documentEndpoint
 
 resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2022-05-15' = {
-  name: '${databaseAccount.name}/${roleDefinitionId}'
+  parent: databaseAccount
+  name: roleDefinitionId
   properties: {
     roleName: roleDefinitionName
     type: 'CustomRole'
@@ -72,7 +73,8 @@ resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinit
 }
 
 resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-05-15' = {
-  name: '${databaseAccount.name}/${roleAssignmentId}'
+  parent: databaseAccount
+  name: roleAssignmentId
   properties: {
     roleDefinitionId: sqlRoleDefinition.id
     principalId: principalId
@@ -82,7 +84,8 @@ resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignm
 
 
 resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-10-15' = {
-  name: '${databaseAccount.name}/todoapp'
+  parent: databaseAccount
+  name: 'todoapp'
   properties: {
     resource: {
       id: 'todoapp'
@@ -91,7 +94,8 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-10-15
 }
 
 resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2021-10-15' = {
-  name: '${database.name}/${'tasks'}'
+  parent: database
+  name: 'tasks'
   properties: {
     resource: {
       id: 'tasks'

@@ -157,3 +157,7 @@ Go to chaos studio and select the experiment we created and press start
 
 ![Chaos Studio Run experiment](assets/images/chaos_studio_run_experiment.png)
 
+See status when completed
+
+![Chaos Studio Run experiment](assets/images/chaos_studio_run_experiment_status.png)
+

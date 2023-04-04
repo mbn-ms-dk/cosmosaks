@@ -182,6 +182,10 @@ Verify the installation
 
 ![Verify installation](assets/images/helm_install.png)
 
+## Chaos Engineering
+
+Now use the [Chaos Studio Readme](CHAOS_README.md)
+
 ## Cleanup
 
 Use the below commands to delete the Resource Group and Deployment

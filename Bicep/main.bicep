@@ -1,151 +1,134 @@
-targetScope = 'subscription'
-
 // Parameters
 param baseName string
 
-param location string = deployment().location
+param location string = resourceGroup().location
 
-
-//acr and cosmos adds
-var rnd = uniqueString(subscription().subscriptionId, deployment().name)
-var rndEnd = uniqueString(substring(rnd, 0, 5))
-
-var rgName = 'rg-${baseName}${rndEnd}'
-var acrName = 'acr${baseName}${rndEnd}'
-var cosmosName = 'cdb${baseName}${rndEnd}'
-var kvName = 'kv${baseName}${rndEnd}'
-
-
-//Create Resource Group
-module rg 'modules/resource-group/rg.bicep' = {
-  name: rgName
-  params: {
-    rgName: rgName
-    location: location
-  }
-}
-
-//Create identity
-module aksIdentity 'modules/Identity/userassigned.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'managedIdentity'
-  params: {
-    basename: '${baseName}${rndEnd}'
-    location: location
-  }
-}
-
-//Create Vnet Resource
-resource vnetAKSRes 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
-  scope: resourceGroup(rg.name)
-  name: vnetAKS.outputs.vnetName
-}
-
-//Create Vnet
-module vnetAKS 'modules/vnet/vnet.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'aksVNet'
-  params: {
-    vnetNamePrefix: 'aks'
-    location: location
-  }
-  dependsOn: [
-    rg
-  ]
-}
-
-//Create ACR
-module acrDeploy 'modules/acr/acr.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'acrInstance'
-  params: {
-    acrName: acrName
-    principalId: aksIdentity.outputs.principalId
-    location: location
-  }
-}
-
-
-//Create Log Analytics Workspace
-module akslaworkspace 'modules/laworkspace/la.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'akslaworkspace'
-  params: {
-    basename: 'la${baseName}${rndEnd}'
-    location: location
-  }
-}
-
-//Create Subnet
-resource subnetaks 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' existing = {
-  name: 'aksSubNet'
-  parent: vnetAKSRes
-}
-
-//Assign Roles
-module aksMangedIDOperator 'modules/Identity/role.bicep' = {
-  name: 'aksMangedIDOperator'
-  scope: resourceGroup(rg.name)
-  params: {
-    principalId: aksIdentity.outputs.principalId
-    roleGuid: 'f1a07417-d97a-45cb-824c-7a7467783830' //ManagedIdentity Operator Role
-  }
-}
-
-module aksNetworkContributor 'modules/Identity/role.bicep' = {
-  name: 'aksNetworkContributor'
-  scope: resourceGroup(rg.name)
-  params: {
-    principalId: aksIdentity.outputs.principalId
-    roleGuid: '4d97b98b-1d4f-4787-a291-c67834d212e7'  //Network Contributor
-  }
-}
-
-//Create AKS
-module aksCluster 'modules/aks/aks.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'aksCluster'
-  dependsOn: [
-    aksMangedIDOperator
-    aksNetworkContributor    
-  ]
-  params: {
-    location: location
-    basename: '${baseName}${rndEnd}'
-    logworkspaceid: akslaworkspace.outputs.laworkspaceId   
-    podBindingSelector: 'cosmostodo-apppodidentity'
-    podIdentityName: 'cosmostodo-apppodidentity'
-    podIdentityNamespace: 'todoapp'
-    subnetId: subnetaks.id
-    clientId: aksIdentity.outputs.clientId
-    identityid: aksIdentity.outputs.identityid
-    identity: {
-      '${aksIdentity.outputs.identityid}' : {}
+//create AKS using aks-construction
+module aksconstr 'Aks-Construction/bicep/main.bicep' = {
+    name: 'aksconstr'
+    params: {
+      location: location
+      resourceName: baseName
+      enable_aad: true
+      enableAzureRBAC: true
+      networkPlugin: 'kubenet'
+      registries_sku: 'Premium'
+      omsagent: true
+      retentionInDays: 30
+      agentCount: 1
+      //enable workload identity
+      workloadIdentity: true
+      //workload identity requires OIDCIssuer to be configured on AKS
+      oidcIssuer: true
+      //enable CSI driver for Keyvault
+      keyVaultAksCSI: true
     }
-    principalId: aksIdentity.outputs.principalId
-  }
 }
+output aksOidcIssuerUrl string = aksconstr.outputs.aksOidcIssuerUrl
+output aksClusterName string = aksconstr.outputs.aksClusterName
+output aksAcrName string = aksconstr.outputs.containerRegistryName
 
-//Create Cosmos DB
-module cosmosdb 'modules/cosmos/cosmos.bicep'={
-  scope:resourceGroup(rg.name)
-  name:'cosmosDB'
+//Create keyvault
+module keyvaultconstr 'Aks-Construction/bicep/keyvault.bicep' ={
+  name: 'kvtodoapp${baseName}'
   params:{
+    resourceName: 'todoapp${baseName}'
+    keyVaultPurgeProtection: false
+    keyVaultSoftDelete: false
     location: location
-    principalId:aksIdentity.outputs.principalId
-    accountName:cosmosName
+    privateLinks: false
+  }
+}
+output keyVaultName string = keyvaultconstr.outputs.keyVaultName
+
+resource todoappId 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: 'id-todoapp'
+  location: location
+
+  resource fedCreds 'federatedIdentityCredentials' = {
+      name: '${baseName}-todoapp'
+      properties: {
+        audiences: aksconstr.outputs.aksOidcFedIdentityProperties.audiences
+        issuer: aksconstr.outputs.aksOidcFedIdentityProperties.issuer
+        subject: 'system:serviceaccount:todoapp:todo-todoapp'
+      }
+  }
+}
+output idTodoAppClientId string = todoappId.properties.clientId
+output idTodoApp string = todoappId.id
+output idTodoAppPrincipalId string = todoappId.properties.principalId
+
+module kvtodoApp 'kvRbac.bicep' = {
+  name: 'kvtodoAppRbac'
+  params: {
+    appclientId: todoappId.properties.principalId
+    kvName: keyvaultconstr.outputs.keyVaultName
+  }
+}
+output aksUserNodePoolName string = 'npuser01' //[for nodepool in aks.properties.agentPoolProfiles: name] // 'npuser01' //hardcoding this for the moment.
+output nodeResourceGroup string = aksconstr.outputs.aksNodeResourceGroup
+
+//Set cosmosdb failover location
+var locations = [
+  {
+    locationName: location
+    failoverPriority: 0
+    isZoneRedundant: false
+  },{
+    locationName: 'northeurope'
+    failoverPriority: 1
+    isZoneRedundant: false
+  }
+]
+//Create Cosmos DB
+var cosmosName = toLower('cdb${baseName}-${uniqueString(resourceGroup().id)}')
+resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
+  name: cosmosName
+  kind: 'GlobalDocumentDB'
+  location: location
+  properties: {
+    consistencyPolicy: {
+      defaultConsistencyLevel: 'Session'
+    }
+    locations: locations
+    databaseAccountOfferType: 'Standard'
+    disableLocalAuth: true      // set to false if you want to use master keys in addition to RBAC
+    enableAutomaticFailover: true
+    enableMultipleWriteLocations: false   
+    isVirtualNetworkFilterEnabled: false     // set to false if you want to use public endpoint for Cosmos
+  }
+}
+//create database and container
+resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2021-10-15' = {
+  parent: cosmosdb
+  name: 'todoapp'
+  properties: {
+    resource: {
+      id: 'todoapp'
+    }
   }
 }
 
-//Create Key Vault
-module keyvault 'modules/keyvault/keyvault.bicep'={
-  name :'keyVault'
-  scope:resourceGroup(rg.name)  
-  params:{
-    kvName:kvName
-    location:location
-    principalId:aksIdentity.outputs.principalId
-    cosmosEndpoint: cosmosdb.outputs.cosmosEndpoint
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2021-10-15' = {
+  parent: database
+  name: 'tasks'
+  properties: {
+    resource: {
+      id: 'tasks'
+      partitionKey: {
+        paths: [
+          '/id'
+        ]
+      }
+    }
   }
 }
+output cosmosdbEndpoint string = cosmosdb.properties.documentEndpoint
 
+module cdbTodoApp 'cosmosRbac.bicep' = {
+  name: 'cdbTodoAppRbac'
+  params: {
+    cdbName: cosmosdb.name
+    appclientId: todoappId.properties.principalId
+  }
+}

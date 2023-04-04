@@ -1,0 +1,6 @@
+[submodule "Aks-Construction"]
+	path = Aks-Construction
+	url = https://github.com/Azure/Aks-Construction
+[submodule "Bicep/Aks-Construction"]
+	path = Bicep/Aks-Construction
+	url = https://github.com/Azure/Aks-Construction

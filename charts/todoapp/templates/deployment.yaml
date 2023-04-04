@@ -25,6 +25,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
           volumeMounts:
           # This mount is not used by the application but is required for the secretProviderClass
             - mountPath: "mnt/secrets-store"

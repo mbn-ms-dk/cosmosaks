@@ -19,8 +19,10 @@ azureWorkloadIdentity:
   clientId: ""
   tenantId: ""
 
+useCSIdriver: true
 keyvaultName: ""
 secretName: ""
 cosmosdbEndpoint: ""
 
 podSecurityContext: {}
+  # fsGroup: 2000

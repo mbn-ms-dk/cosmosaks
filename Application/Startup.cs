@@ -71,15 +71,11 @@
         /// <returns></returns>
         private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfiguration configuration)
         {
-   
-            string endpoint =  Environment.GetEnvironmentVariable("COSMOSENDPOINT"); //configuration["CosmosEndpoint"];
-            Console.WriteLine($"COSMOSENDPOINT: {endpoint}");
+            string endpoint =  Environment.GetEnvironmentVariable("COSMOSENDPOINT"); 
             string databaseName = configuration.GetSection("CosmosDb").GetSection("DatabaseName").Value;
             string containerName = configuration.GetSection("CosmosDb").GetSection("ContainerName").Value;
 
-
             //Microsoft.Azure.Cosmos.CosmosClient client = new Microsoft.Azure.Cosmos.CosmosClient(endpoint, key);
-
             var credential = new DefaultAzureCredential();
 
             Microsoft.Azure.Cosmos.CosmosClient client = new Microsoft.Azure.Cosmos.CosmosClient(endpoint, credential);

@@ -150,3 +150,14 @@ When you create a chaos experiment, Chaos Studio creates a system-assigned manag
 ![Chaos Studio IAM](assets/images/chaos_studio_iam_add_role_cosmos_db_operator.png)
 
 7. Click Review + assign then Review + assign.
+
+### Run the experiment
+
+Go to chaos studio and select the experiment we created and press start
+
+![Chaos Studio Run experiment](assets/images/chaos_studio_run_experiment.png)
+
+See status when completed
+
+![Chaos Studio Run experiment](assets/images/chaos_studio_run_experiment_status.png)
+

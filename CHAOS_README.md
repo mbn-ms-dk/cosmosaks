@@ -12,6 +12,7 @@ From the Azure Portal search for "Chaos Studio" and click on the "Chaos Studio" 
 ![Chaos Studio](assets/images/azure_portal_select_chaos_studio.png)
 
 We will use [Chaos Mesh](https://chaos-mesh.org/) for AKS in this setup so we need to configure AKS with Chaos Mesh.
+
 ```bash
 # Install Chaos Mesh
 helm repo add chaos-mesh https://charts.chaos-mesh.org

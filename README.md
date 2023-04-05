@@ -175,7 +175,7 @@ Use helm to deploy
 cd ..
 az aks get-credentials -n $AKSCLUSTER -g $rg --admin --overwrite-existing # Get the credentials for the cluster
 TENANTID=$(az account show --query tenantId -o tsv) # Get the tenant id
-helm upgrade --install todo charts/todoapp --set azureWorkloadIdentity.tenantId=$TENANTID,azureWorkloadIdentity.clientId=$TODOAPP,keyvaultName=$KVNAME,secretName=arbitrarySecret,cosmosdbEndpoint=$COSMOS,image.repository=$ACR.azurecr.io/cosmosaks -n todoapp --create-namespace
+helm upgrade --install todo charts/todoapp --set azureWorkloadIdentity.tenantId=$TENANTID,azureWorkloadIdentity.clientId=$TODOAPP,keyvaultName=$KVNAME,secretName=arbitrarysecret,cosmosdbEndpoint=$COSMOS,image.repository=$ACR.azurecr.io/cosmosaks -n todoapp --create-namespace
 ```
 
 Verify the installation
@@ -193,3 +193,8 @@ Use the below commands to delete the Resource Group and Deployment
 ```azurecli
 az group delete -g $rg -y
 ```
+
+## Debug references
+[Debug](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connection-issues-application-hosted-aks-cluster)
+[CSI Driver](https://docs.microsoft.com/en-us/azure/aks/csi-secrets-store-driver)
+[CSI driver debug](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/troubleshoot-key-vault-csi-secrets-store-csi-driver)

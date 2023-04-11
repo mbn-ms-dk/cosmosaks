@@ -195,6 +195,9 @@ az group delete -g $rg -y
 ```
 
 ## Debug references
+
 [Debug](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/connection-issues-application-hosted-aks-cluster)
+
 [CSI Driver](https://docs.microsoft.com/en-us/azure/aks/csi-secrets-store-driver)
+
 [CSI driver debug](https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/troubleshoot-key-vault-csi-secrets-store-csi-driver)

@@ -1,6 +1,9 @@
 // Parameters
+@minLength(3)
+@description('The basename to use for the deployment.')
 param baseName string
-
+@minLength(3)
+@description('The location to use for the deployment. Defaults to Resource Groups location.')
 param location string = resourceGroup().location
 
 //create AKS using aks-construction

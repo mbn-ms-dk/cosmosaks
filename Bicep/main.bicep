@@ -1,6 +1,12 @@
 // Parameters
+@minLength(3)
+@maxLength(5)
+@description('Used to name all resources')
 param baseName string
 
+
+@minLength(3)
+@description('The location to use for the deployment. defaults to Resource Groups location.')
 param location string = resourceGroup().location
 
 //create AKS using aks-construction
@@ -65,7 +71,7 @@ module kvtodoApp 'kvRbac.bicep' = {
     kvName: keyvaultconstr.outputs.keyVaultName
   }
 }
-output aksUserNodePoolName string = 'npuser01' //[for nodepool in aks.properties.agentPoolProfiles: name] // 'npuser01' //hardcoding this for the moment.
+output aksUserNodePoolName string = 'npuser01' 
 output nodeResourceGroup string = aksconstr.outputs.aksNodeResourceGroup
 
 //Set cosmosdb failover location

@@ -101,7 +101,7 @@ Run the following scripts to create the deployment:
 ```bash
 cd Bicep
 rg='rg-chaos' # Resource Group for deploying the resources
-location='westeurope' # Location for deploying the resources - set to westeurope with failover in northeurope
+location='westeurope' # Location for deploying the resources - set to westeurope with failover in northeurope (for cosmos DB)
 baseName='awi' # Base name for all resources
 ```
 
@@ -120,7 +120,7 @@ az group create -n $rg -l $location
 
 ```bash
 # Deploy the infrastructure
-DEP=$(az deployment group create -g $rg -f main.bicep --parameters baseName=$baseName -o json)
+DEP=$(az deployment group create --name create-env-$baseName -g $rg -f main.bicep --parameters baseName=$baseName -o json)
 ```
 
 The deployment could take somewhere around 20 to 30 mins. Once provisioning is completed you should see a JSON output with Succeeded as provisioning state.
@@ -144,9 +144,7 @@ ACR=$(echo $DEP | jq -r '.properties.outputs.aksAcrName.value')
 
 **4. Push the container image to Azure Container Registry**
 
-The application can be built and pushed to ACR using VS Code
-
-***Using Visual Studio Code**
+The application can be built and pushed to ACR using VS Code. The following steps will guide you through the process.
 
 Prerequisites:
 
@@ -169,7 +167,7 @@ Prerequisites:
     4. Wait for VS Code  to push the  image to ACR.
 
 **5. Deploy**
-Use helm to deploy
+Use helm to deploy. First, get the credentials for the cluster and then use helm to install the application.
 
 ```bash
 cd ..
